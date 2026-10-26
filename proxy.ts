@@ -1,6 +1,22 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextRequest, NextResponse } from 'next/server';
 
+type CookieUpdate = {
+  name: string;
+  value: string;
+  options?: {
+    domain?: string;
+    path?: string;
+    expires?: Date;
+    httpOnly?: boolean;
+    secure?: boolean;
+    sameSite?: boolean | 'lax' | 'strict' | 'none';
+    maxAge?: number;
+    priority?: 'low' | 'medium' | 'high';
+    partitioned?: boolean;
+  };
+};
+
 export async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request });
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -10,7 +26,7 @@ export async function proxy(request: NextRequest) {
   const supabase = createServerClient(url, key, {
     cookies: {
       getAll() { return request.cookies.getAll(); },
-      setAll(items) {
+      setAll(items: CookieUpdate[]) {
         items.forEach(({ name, value }) => request.cookies.set(name, value));
         response = NextResponse.next({ request });
         items.forEach(({ name, value, options }) => response.cookies.set(name, value, options));
