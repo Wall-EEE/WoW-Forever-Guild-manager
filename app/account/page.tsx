@@ -40,7 +40,7 @@ export default async function AccountPage(){
            <Link href="/characters"><span className="account-link-icon">⚔</span><span><strong>My Characters</strong><small>Manage mains, alts and specializations</small></span><span aria-hidden="true">›</span></Link>
            <Link href="/raids"><span className="account-link-icon">▦</span><span><strong>Raid Calendar</strong><small>Offer availability and view confirmations</small></span><span aria-hidden="true">›</span></Link>
            <Link href="/guild"><span className="account-link-icon">♜</span><span><strong>Guild Roster</strong><small>Meet your guild and explore characters</small></span><span aria-hidden="true">›</span></Link>
-           {profile.role==='guild_master'&&<Link href="/admin/members"><span className="account-link-icon">♛</span><span><strong>Manage guild ranks</strong><small>Promote guests and manage officers</small></span><span aria-hidden="true">›</span></Link>}
+           {officer&&<Link href="/admin/members"><span className="account-link-icon">♛</span><span><strong>{profile.role==='guild_master'?'Manage guild ranks':'Membership requests'}</strong><small>{profile.role==='guild_master'?'Promote guests and manage officers':'Accept guests as guild members'}</small></span><span aria-hidden="true">›</span></Link>}
            {officer&&<Link href="/admin/guests"><span className="account-link-icon">♧</span><span><strong>Guest approvals</strong><small>{pending??0} guest requests awaiting review</small></span><span aria-hidden="true">›</span></Link>}
          </div></section>
          <section className="account-panel"><p className="account-kicker">PROFILE DETAILS</p><h2>Account overview</h2><dl className="account-details">
