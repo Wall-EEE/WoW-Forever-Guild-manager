@@ -108,3 +108,9 @@ grant execute on function public.create_raid(text,text,text,integer,text,integer
 drop function if exists public.create_raid(text,text,text,integer,text);
 revoke all on function public.raid_roster() from public;
 grant execute on function public.raid_roster() to authenticated;
+
+-- Supabase grants EXECUTE to anon explicitly on newly created public functions.
+-- Revoke that inherited default independently of the PUBLIC role.
+revoke execute on function public.join_raid(uuid,uuid,text) from anon;
+revoke execute on function public.create_raid(text,text,text,integer,text,integer,integer,integer) from anon;
+revoke execute on function public.raid_roster() from anon;
