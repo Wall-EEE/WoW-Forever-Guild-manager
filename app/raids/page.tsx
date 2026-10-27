@@ -1,10 +1,11 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
-import { createRaid, joinRaid, leaveRaid, deleteRaid } from './actions';
+import { createRaid, leaveRaid } from './actions';
 import './raids.css';
 import DeleteRaidConfirm from './delete-confirm';
 import RoleTargets from './role-targets';
+import RaidSignupForm from './signup-form';
 
 export const dynamic = 'force-dynamic';
 
@@ -111,14 +112,11 @@ export default async function RaidsPage({ searchParams }: { searchParams: Promis
               <div className="raid-progress"><span style={{ width: ((roster.length / raid.capacity) * 100) + '%' }} /></div>
               <div className="raid-event-bottom"><span>{open} {open === 1 ? 'spot' : 'spots'} available</span>
                 {mine ? <form action={leaveRaid}><input type="hidden" name="raid_id" value={raid.id}/><span className="raid-joined">✓ Signed up</span><button className="raid-button raid-muted" type="submit">Leave raid</button></form>
-                : canJoin && characters.length ? <form action={joinRaid}>
-                  <input type="hidden" name="raid_id" value={raid.id}/>
-                  <select name="character_id" required aria-label={'Select character for ' + raid.title}>
-                    {characters.map(character => <option value={character.id} key={character.id}>{character.character_name} · {character.spec_name??'Unspecified'} {character.class_name}</option>)}
-                  </select>
-                  <select name="signup_role" required aria-label="Your raid role" defaultValue={characters[0]?.raid_role==='flex'?'dps':characters[0]?.raid_role}><option value="tank">Tank</option><option value="healer">Healer</option><option value="dps">DPS</option></select>
-                  <button className="raid-button" type="submit">Sign up</button>
-                </form> : <span className="raid-unavailable">{!eligible ? 'Awaiting approval' : !characters.length ? 'Register a character first' : open === 0 ? 'Raid full' : 'Guild members only'}</span>}
+                : canJoin && characters.length ? <RaidSignupForm raidId={raid.id} characters={characters} remaining={{
+                  tank: raid.tank_slots-roster.filter(s=>s.signup_role==='tank').length,
+                  healer: raid.healer_slots-roster.filter(s=>s.signup_role==='healer').length,
+                  dps: raid.dps_slots-roster.filter(s=>s.signup_role==='dps').length,
+                }}/> : <span className="raid-unavailable">{!eligible ? 'Awaiting approval' : !characters.length ? 'Register a character first' : open === 0 ? 'Raid full' : 'Guild members only'}</span>}
               </div>
               {isOfficer && <div className="raid-admin"><DeleteRaidConfirm id={raid.id} title={raid.title} signups={roster.length}/></div>}
             </article>;
