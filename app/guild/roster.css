@@ -1,0 +1,26 @@
+.roster-shell{min-height:100vh;background:radial-gradient(ellipse at 70% 0,#272014 0,transparent 40%),#0b0e14;color:#eae7df}
+.roster-nav{display:flex;align-items:center;gap:30px;flex-wrap:wrap;padding:19px max(22px,calc((100vw - 1280px)/2));background:#11141b;border-bottom:1px solid #393324}
+.roster-brand{color:#e2b46d;font-size:17px;font-weight:800;white-space:nowrap}.roster-brand b{color:#f3ede3}
+.roster-nav nav{display:flex;gap:20px;flex-wrap:wrap}.roster-nav nav a{color:#a2a7b2;font-size:13px}.roster-nav nav a[aria-current]{color:#e7bb76}
+.roster-user{margin-left:auto;color:#a1a6b0;font-size:12px}.roster-content{max-width:1320px;margin:auto;padding:38px 24px 90px}
+.roster-kicker{color:#cba064;font-size:10px;font-weight:800;letter-spacing:1.8px}.roster-heading{display:flex;align-items:center;justify-content:space-between;gap:20px;margin:28px 0}
+.roster-heading h1{font-size:38px;margin:10px 0}.roster-heading p:last-child{color:#a7abb5;line-height:1.6}.roster-banner{border:1px solid #6c522f;color:#e2bb7a;border-radius:8px;padding:14px;white-space:nowrap}
+.roster-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:26px 0}
+.roster-stats>div,.roster-browser{border:1px solid #393943;border-radius:10px;background:#171b24;padding:22px}
+.roster-stats span,.roster-stats strong{display:block}.roster-stats span{color:#a7a9b3;font-size:11px;letter-spacing:1px}.roster-stats strong{font-size:30px;margin-top:10px;color:#e9c184}
+.roster-browser-head{display:flex;justify-content:space-between;align-items:center;gap:12px}.roster-browser-head h2{font-size:23px;margin:8px 0}.roster-browser-head>span{font-size:12px;color:#aab0bc}
+.roster-filters{display:grid;grid-template-columns:minmax(190px,2fr) repeat(2,minmax(120px,1fr)) auto;gap:12px;align-items:end;margin:20px 0}
+.roster-filters label{display:grid;gap:8px;color:#c4c5cc;font-size:12px}.roster-filters input[type=search],.roster-filters select{background:#10141d;border:1px solid #52505a;color:#f0ede7;border-radius:7px;padding:12px;min-height:44px;min-width:0;width:100%}
+.roster-filters .roster-check{display:flex;align-items:center;gap:9px;min-height:44px;white-space:nowrap}.roster-check input{accent-color:#d8ac68;width:18px;height:18px}
+.roster-members{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.roster-member{border:1px solid #45414a;border-radius:9px;background:#1d212b;padding:18px;min-width:0}
+.roster-member-head{display:flex;align-items:center;gap:12px;border-bottom:1px solid #3c3b44;padding-bottom:14px}.roster-avatar{display:grid;place-items:center;flex-shrink:0;width:42px;height:42px;background:#393024;border:1px solid #785e3a;color:#e6c28d;border-radius:9px;font-size:20px;font-weight:bold}
+.roster-member-name{flex:1;min-width:0}.roster-member-name h3{font-size:17px;margin:0 0 6px;overflow-wrap:anywhere}.roster-member-head>small{color:#a9aab4;white-space:nowrap}
+.roster-rank{color:#bdc2cc;font-size:11px}.roster-rank-guild_master{color:#e5bd79}.roster-rank-officer{color:#a9bde6}
+.roster-character-grid{display:grid;gap:9px;margin-top:14px}.roster-character{display:flex;gap:11px;align-items:center;border-radius:7px;background:#151923;padding:11px;min-width:0}
+.roster-class-icon{width:34px;height:34px;flex-shrink:0;border:1px solid #60523e;background:#302920;color:#f3c581;border-radius:7px;display:grid;place-items:center;font-weight:bold}
+.roster-character>div{min-width:0}.roster-character strong,.roster-character span,.roster-character small{display:block;overflow-wrap:anywhere}.roster-character strong{font-size:13px}.roster-character strong em{font-style:normal;font-size:9px;color:#e7b56c}
+.roster-character span{font-size:11px;color:#adb2bf;margin-top:4px}.roster-character small{font-size:10px;color:#d3b787;margin-top:5px}.roster-no-chars{color:#9da4b0;font-size:12px}
+.roster-empty{padding:38px;border:1px solid #53462f;border-radius:9px;background:#231f1a;color:#e3c99d}.roster-empty h2{margin-top:0}
+.roster-footnote{font-size:11px;color:#89919e;margin-top:24px;line-height:1.7}
+@media(max-width:900px){.roster-members{grid-template-columns:1fr}.roster-filters{grid-template-columns:repeat(2,minmax(0,1fr))}.roster-user{margin-left:0}}
+@media(max-width:540px){.roster-content{padding:26px 15px}.roster-heading h1{font-size:30px}.roster-banner{display:none}.roster-stats{gap:8px}.roster-stats>div{padding:13px}.roster-stats strong{font-size:24px}.roster-filters{grid-template-columns:1fr}.roster-browser{padding:14px}.roster-member{padding:12px}.roster-nav{padding:16px;gap:15px}.roster-nav nav{gap:12px}}

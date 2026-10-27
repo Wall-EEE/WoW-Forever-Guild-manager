@@ -76,3 +76,15 @@ calculating its Wednesday 00:00 boundary. This matches the database's existing
 Wednesday raid lockout grouping, including daylight-saving and New Year
 boundaries. Week numbers are labels, not a replacement for the per-instance
 `lockout_key` used to enforce confirmation limits.
+
+## Milestone 5 — Guild roster (first phase)
+
+The `/guild` directory shows live guild members (members, officers and Guild Master)
+with their registered mains/alts, class, spec, race and preferred role.
+Client-side search and class/rank/main filters are available on mobile and desktop.
+Approved guests can view the directory but are not listed as guild members.
+Pending or rejected guests cannot browse the directory. Access is enforced in the
+`guild_roster()` PostgreSQL RPC, not just the interface; no Discord tokens or
+emails are exposed. Apply `202610270008_guild_roster.sql` to new environments.
+
+Interviews/applications, guides, logs and Armory/game imports remain future phases.

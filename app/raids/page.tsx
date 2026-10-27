@@ -82,7 +82,7 @@ export default async function RaidsPage({ searchParams }: { searchParams: Promis
   return <main className="raid-shell">
     <header className="raid-nav">
       <Link href="/" className="raid-logo">⚔ <span>WOW <b>FOREVER</b></span></Link>
-      <nav><Link href="/">Overview</Link><Link className="selected" href="/raids">Raid Calendar</Link><Link href="/characters">My Characters</Link><Link href="/account">Account</Link></nav>
+      <nav><Link href="/">Overview</Link><Link className="selected" href="/raids">Raid Calendar</Link><Link href="/characters">My Characters</Link><Link href="/guild">Guild Roster</Link><Link href="/account">Account</Link></nav>
       <span className="raid-profile">{profile?.display_name ?? 'Adventurer'}</span>
     </header>
     <div className="raid-container">

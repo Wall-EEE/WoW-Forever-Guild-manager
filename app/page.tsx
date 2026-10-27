@@ -23,7 +23,8 @@ export default function Home() {
         <nav>
           <a className="nav-item active" href="#">◈ Overview</a>
           <a className="nav-item" href="/raids">▦ Raid calendar</a>
-          <a className="nav-item" href="/characters">⚔ Roster & characters</a>
+          <a className="nav-item" href="/characters">⚔ My characters</a>
+          <a className="nav-item" href="/guild">♜ Guild roster</a>
           <a className="nav-item" href="#">♙ Applications</a>
           <a className="nav-item" href="/admin/guests">♧ Guest players</a>
           <a className="nav-item" href="#">▤ Strategies</a>
