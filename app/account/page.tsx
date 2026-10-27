@@ -15,6 +15,7 @@ export default async function AccountPage() {
       <><p>Welcome, <strong>{profile.display_name}</strong>.</p>
       <p>Guild role: <strong>{profile.role}</strong></p>
       <p>Guest status: <strong>{profile.guest_status}</strong></p>
+      <Link className="primary-button" href="/characters">Manage my characters</Link>
       {profile.guest_status === 'pending' && <p>Your guest request is awaiting review. You cannot sign up for raids yet.</p>}
       {['guild_master','officer'].includes(profile.role) && <Link className="primary-button" href="/admin/guests">Review guest requests</Link>}</>}
     <form action="/auth/signout" method="post"><button className="secondary-button" type="submit">Sign out</button></form>

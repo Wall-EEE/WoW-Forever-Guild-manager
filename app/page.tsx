@@ -23,9 +23,9 @@ export default function Home() {
         <nav>
           <a className="nav-item active" href="#">◈ Overview</a>
           <a className="nav-item" href="#">▦ Raid calendar</a>
-          <a className="nav-item" href="#">⚔ Roster & characters</a>
+          <a className="nav-item" href="/characters">⚔ Roster & characters</a>
           <a className="nav-item" href="#">♙ Applications</a>
-          <a className="nav-item" href="#">♧ Guest players</a>
+          <a className="nav-item" href="/admin/guests">♧ Guest players</a>
           <a className="nav-item" href="#">▤ Strategies</a>
         </nav>
         <div className="sidebar-bottom"><span className="online-dot" />Development build<p>CLASSIC+ · LEVEL 60</p></div>
