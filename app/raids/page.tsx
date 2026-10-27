@@ -17,6 +17,7 @@ type Signup = { id: string; raid_id: string; profile_id: string; character_id: s
 type RosterEntry = { raid_id:string;character_name:string;class_name:string;spec_name:string;signup_role:string;display_name:string };
 type Candidate = {raid_id:string;profile_id:string;display_name:string;character_id:string;character_name:string;class_name:string;spec_name:string;current_assignment:string|null};
 type Offer = {raid_id:string;character_id:string};
+type LegacyConflict = {raid_id:string;character_name:string;conflicting_raid:string};
 type Character = { id: string; character_name: string; class_name: string; raid_role: string; spec_name:string|null; level: number };
 const time = (value: string) => new Intl.DateTimeFormat('en-GB', {
   day: '2-digit', month: 'short', year: 'numeric', weekday: 'short',
@@ -43,6 +44,8 @@ export default async function RaidsPage({ searchParams }: { searchParams: Promis
   const publicRoster=(rosterResult.data??[]) as RosterEntry[];
   const isOfficer = profile?.role === 'officer' || profile?.role === 'guild_master';
   const {data: candidateData,error:candidateError} = isOfficer ? await supabase.rpc('raid_candidates') : {data: [] as Candidate[],error:null};
+  const {data: legacyData} = isOfficer ? await supabase.rpc('raid_lockout_conflicts') : {data: [] as LegacyConflict[]};
+  const legacyConflicts=(legacyData??[]) as LegacyConflict[];
   const candidates=(candidateData??[]) as Candidate[];
   const offers=(offerResult.data??[]) as Offer[];
   const eligible = !!profile && (profile.role !== 'guest' || profile.guest_status === 'approved');
@@ -105,6 +108,7 @@ export default async function RaidsPage({ searchParams }: { searchParams: Promis
             const isLeader = isOfficer && (raid.created_by === uid || profile?.role==='guild_master');
             const offeredIds=offers.filter(o=>o.raid_id===raid.id).map(o=>o.character_id);
             const raidCandidates=candidates.filter(c=>c.raid_id===raid.id);
+            const raidConflicts=legacyConflicts.filter(c=>c.raid_id===raid.id);
             const waitingCount=new Set(raidCandidates.filter(c=>!c.current_assignment).map(c=>c.profile_id)).size;
             return <article className="raid-event" key={raid.id}>
               <div className="raid-event-head">
@@ -127,6 +131,12 @@ export default async function RaidsPage({ searchParams }: { searchParams: Promis
                       <div><strong>{member.character_name}</strong><small>{member.spec_name} {member.class_name} · {member.display_name}</small></div>
                     </div>)}</div>}
               </section>)}</div>
+              {isLeader && raidConflicts.length>0 && <div className="raid-warning" role="status">
+                <b>Older roster assignments need lockout review</b>
+                {raidConflicts.map((conflict,index)=><p key={conflict.character_name+index}>
+                  {conflict.character_name} is confirmed for another {conflict.conflicting_raid} event in the same Wednesday lockout week.
+                  Unassign one booking and choose an eligible alternative.</p>)}
+              </div>}
               {isLeader && <section className="raid-leader-section">
                 <div className="raid-leader-heading"><h4>Leader roster decisions</h4><span>{waitingCount} players awaiting assignment</span></div>
                 {candidateError && <p className="raid-roster-empty">Could not load availability candidates.</p>}

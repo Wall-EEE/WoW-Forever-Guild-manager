@@ -187,3 +187,24 @@ grant execute on function public.raid_candidates() to authenticated;
 -- Disable the obsolete direct-signup API entirely.
 drop function if exists public.join_raid(uuid,uuid,text);
 drop function if exists public.create_raid(text,text,text,integer,text,integer,integer,integer);
+
+-- Flag pre-existing confirmed lockout conflicts without deleting signups.
+CREATE OR REPLACE FUNCTION public.raid_lockout_conflicts()
+ RETURNS TABLE(raid_id uuid, character_name text, conflicting_raid text)
+ LANGUAGE plpgsql
+ STABLE SECURITY DEFINER
+ SET search_path TO ''
+AS $function$
+begin
+ if (select auth.uid()) is null or not (select public.is_officer()) then raise exception 'Officers only'; end if;
+ return query select a.raid_id,c.character_name,rb.title
+ from public.raid_signups a
+ join public.raid_signups b on a.character_id=b.character_id and a.raid_id<>b.raid_id
+ join public.raids ra on ra.id=a.raid_id
+ join public.raids rb on rb.id=b.raid_id
+ join public.characters c on c.id=a.character_id
+ where ra.starts_at>=now() and ra.lockout_key=rb.lockout_key
+   and public.raid_week_start(ra.starts_at)=public.raid_week_start(rb.starts_at);
+end; $function$;
+revoke all on function public.raid_lockout_conflicts() from public,anon;
+grant execute on function public.raid_lockout_conflicts() to authenticated;
