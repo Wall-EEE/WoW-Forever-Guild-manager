@@ -58,3 +58,11 @@ Raid server actions log structured entries prefixed with `[raid-action]` to Verc
 ## Raid roles and specialization
 
 The character form offers class-specific specs (tentative Classic-style names until official game details are published). Existing characters have no spec until updated. Raid creation supports editable tank/healer/DPS quotas that total 10, 20 or 40 slots. Default templates are 1/2/7, 2/3/15 and 4/8/28. Signups include a role validated by the database; the roster displays role groups, character classes, specialization and player display names. Deleting a raid requires explicit modal confirmation. The new schema change is in `supabase/migrations/202610270006_role_roster_and_specs.sql`.
+
+## Multi-character availability and leader confirmations
+
+The roster is now two-stage: players offer one or several level-60 characters to each upcoming raid; no slot is held yet. The raid creator (officer) or Guild Master confirms one character and role per player; the leader can unassign and choose an alternative offered character later. Officers can review availability, but only the creator/GM confirms. Pending guests and guild-only access still follow the existing eligibility rules. Prior confirmed signups are preserved and prefilled as availability.
+
+Confirmed assignments count against raid capacity and role quotas. A character cannot be confirmed twice for the **same raid lockout group** during a Wednesday 00:00–Wednesday 00:00 Europe/Oslo window; the system also blocks overlapping confirmed raids. The raid creation form accepts an optional lockout group identifier (defaults to the event name). Use the **same** identifier for repeated runs of the same instance, even if their event titles differ. This is a prospective roster reservation, not a verified in-game lockout. Reset time and actual rules should be revisited when the game launches.
+
+The new schema is in `supabase/migrations/202610270007_raid_availability_confirmation.sql`. Former direct signup RPC is removed.
