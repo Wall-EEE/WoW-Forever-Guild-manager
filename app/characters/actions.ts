@@ -6,23 +6,22 @@ import { createClient } from '@/lib/supabase/server';
 
 const CLASSES = new Set(['Warrior', 'Paladin', 'Hunter', 'Rogue', 'Priest', 'Shaman', 'Mage', 'Warlock', 'Druid']);
 const ROLES = new Set(['tank', 'healer', 'dps', 'flex']);
+const RACES = new Set(['Orc', 'Tauren', 'Troll', 'Undead', 'Skyborne']);
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-type CharacterValues = { character_name: string; realm: string; class_name: string; race_name: string | null; level: number; raid_role: string };
+type CharacterValues = { character_name: string; realm: string; class_name: string; race_name: string; level: number; raid_role: string };
 
 function parseCharacter(data: FormData): CharacterValues | null {
   const character_name = String(data.get('character_name') ?? '').trim();
-  const realm = String(data.get('realm') ?? '').trim();
+  
   const class_name = String(data.get('class_name') ?? '');
   const race = String(data.get('race_name') ?? '').trim();
-  const levelText = String(data.get('level') ?? '');
+  
   const raid_role = String(data.get('raid_role') ?? '');
-  const level = Number(levelText);
+  
   if (character_name.length < 2 || character_name.length > 40 ||
-      realm.length < 2 || realm.length > 80 ||
       !CLASSES.has(class_name) || !ROLES.has(raid_role) ||
-      (race.length > 0 && (race.length < 2 || race.length > 40)) ||
-      !/^\d+$/.test(levelText) || !Number.isInteger(level) || level < 1 || level > 60) return null;
-  return { character_name, realm, class_name, race_name: race || null, level, raid_role };
+      !RACES.has(race)) return null;
+  return { character_name, realm: 'Guild', class_name, race_name: race, level: 60, raid_role };
 }
 
 async function session() {

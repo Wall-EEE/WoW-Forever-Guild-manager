@@ -33,9 +33,9 @@ npm run build
 
 ## Character management
 
-Signed-in players can store unlimited characters under their own account. Fields are name, realm, optional race, class, level 1–60, preferred raid role and a main marker. Ownership is enforced at the PostgreSQL row-level, and changing main uses an atomic database function to ensure no player has more than one main. Officers may read character rows under the existing policy but cannot modify someone else's characters. Discord guest status does not prevent maintaining a private character roster; raid signup eligibility will be enforced separately when the raid feature is implemented.
+Signed-in players can store unlimited characters under their own account. Players provide character name, class, one of five Horde races (Orc, Tauren, Troll, Undead, Skyborne), preferred raid role and a main marker. Realm is an internal constant for this single-guild app, and all newly registered characters are recorded as level 60. This registration convention is not automatic verification of in-game level; raid eligibility must additionally check the guest/member permissions once signups are implemented. Ownership is enforced at the PostgreSQL row-level, and changing main uses an atomic database function to ensure no player has more than one main. Officers may read character rows under the existing policy but cannot modify someone else's characters. Discord guest status does not prevent maintaining a private character roster; raid signup eligibility will be enforced separately when the raid feature is implemented.
 
-Level cap and classic class choices are current **project assumptions**, not a verified list of features for an unreleased game.
+Horde-only registration, available races, and classic class choices are current **project assumptions**, not a verified list of features for an unreleased game.
 
 ## Roadmap
 

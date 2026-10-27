@@ -6,6 +6,7 @@ import './characters.css';
 
 export const dynamic = 'force-dynamic';
 
+const races = ['Orc', 'Tauren', 'Troll', 'Undead', 'Skyborne'];
 const classes = ['Warrior', 'Paladin', 'Hunter', 'Rogue', 'Priest', 'Shaman', 'Mage', 'Warlock', 'Druid'];
 const roles = [
   { value: 'tank', label: 'Tank' }, { value: 'healer', label: 'Healer' },
@@ -21,15 +22,18 @@ function CharacterForm({ character }: { character?: Character }) {
     {character && <input type="hidden" name="character_id" value={character.id} />}
     <div className="form-grid">
       <label>Character name <input name="character_name" required minLength={2} maxLength={40} defaultValue={character?.character_name} placeholder="Aetherwind" /></label>
-      <label>Realm <input name="realm" required minLength={2} maxLength={80} defaultValue={character?.realm} placeholder="Your realm" /></label>
       <label>Class
         <select name="class_name" required defaultValue={character?.class_name ?? ''}>
           <option value="" disabled>Select a class</option>
           {classes.map(name => <option value={name} key={name}>{name}</option>)}
         </select>
       </label>
-      <label>Race (optional) <input name="race_name" minLength={2} maxLength={40} defaultValue={character?.race_name ?? ''} placeholder="Human, Orc, ..." /></label>
-      <label>Level (1–60) <input name="level" type="number" required min={1} max={60} step={1} defaultValue={character?.level ?? 1} /></label>
+      <label>Race
+        <select name="race_name" required defaultValue={character?.race_name ?? ''}>
+          <option value="" disabled>Select a race</option>
+          {races.map(name => <option value={name} key={name}>{name}</option>)}
+        </select>
+      </label>
       <label>Preferred raid role
         <select name="raid_role" defaultValue={character?.raid_role ?? 'flex'}>
           {roles.map(role => <option key={role.value} value={role.value}>{role.label}</option>)}
@@ -56,7 +60,7 @@ export default async function CharactersPage({ searchParams }: { searchParams: P
   const feedback: Record<string, string> = {
     created: 'Character added successfully.', updated: 'Changes saved.',
     deleted: 'Character deleted.', main: 'Main character updated.',
-    error: 'Unable to save your changes. Check the fields, or make sure this character belongs to you and is not already registered on this realm.',
+    error: 'Unable to save your changes. Check the fields, or make sure this character belongs to you and is not already registered.',
   };
   const main = characters.find(char => char.is_main);
 
@@ -70,14 +74,14 @@ export default async function CharactersPage({ searchParams }: { searchParams: P
       <div className="char-breadcrumb">GUILD COMMAND CENTER / ROSTER</div>
       <div className="char-heading"><div><p className="char-kicker">THE HALL OF HEROES</p><h1>My Characters</h1>
         <p>All your adventurers, one roster. Prepare your mains and alts for the raids ahead.</p></div>
-        <span className="char-cap">CLASSIC+ <strong>LEVEL CAP 60</strong></span>
+        <span className="char-cap">HORDE · PVP <strong>LEVEL 60 ONLY</strong></span>
       </div>
 
       {result && feedback[result] && <div role="status" className={result === 'error' ? 'char-notice char-notice-error' : 'char-notice'}>{feedback[result]}</div>}
 
       <div className="char-summary">
         <div><span>REGISTERED CHARACTERS</span><strong>{characters.length}</strong></div>
-        <div><span>AT LEVEL 60</span><strong>{characters.filter(c => c.level === 60).length}</strong></div>
+        <div><span>RAID-LEVEL CHARACTERS</span><strong>{characters.filter(c => c.level === 60).length}</strong></div>
         <div><span>YOUR MAIN</span><strong className="char-main-stat">{main?.character_name ?? 'Not selected'}</strong></div>
       </div>
 
@@ -91,7 +95,7 @@ export default async function CharactersPage({ searchParams }: { searchParams: P
             <div className="char-info">
               <div className="char-name">{char.character_name} {char.is_main && <span className="char-main-badge">★ MAIN</span>}</div>
               <div className="char-meta">Level {char.level} {char.race_name ? char.race_name + ' ' : ''}{char.class_name} · {char.raid_role.toUpperCase()}</div>
-              <div className="char-realm">Realm: {char.realm}</div>
+              <div className="char-realm">Horde · PvP ruleset</div>
             </div>
             <div className="char-actions">
               {!char.is_main && <form action={makeMain}><input type="hidden" name="character_id" value={char.id}/><button type="submit" className="char-action">Set main</button></form>}
@@ -105,9 +109,9 @@ export default async function CharactersPage({ searchParams }: { searchParams: P
         <aside className="char-panel char-create">
           <p className="char-kicker">EXPAND YOUR ROSTER</p>
           <h2>Register a character</h2>
-          <p className="char-help">Enter your character details manually. Game imports can be added when supported.</p>
+          <p className="char-help">Register your level 60 Horde character for the guild’s PvP ruleset. Realm and level are handled automatically; game imports can come later.</p>
           <CharacterForm />
-          <p className="char-helper">Characters are private to your account. Guild officers may view them, but only you can edit or delete them.</p>
+          <p className="char-helper">All registered characters are stored at level 60. Guild officers can view them, but only you can edit or delete your characters.</p>
         </aside>
       </div>
       <p className="char-footnote">WoW Forever · Built for guild members and approved guest raiders. Character registration is available to all signed-in accounts.</p>
