@@ -1,48 +1,16 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
-import { saveCharacter, deleteCharacter, makeMain } from './actions';
+import { deleteCharacter, makeMain } from './actions';
+import CharacterForm from './spec-form';
 import './characters.css';
 
 export const dynamic = 'force-dynamic';
 
-const races = ['Orc', 'Tauren', 'Troll', 'Undead', 'Skyborne'];
-const classes = ['Warrior', 'Paladin', 'Hunter', 'Rogue', 'Priest', 'Shaman', 'Mage', 'Warlock', 'Druid'];
-const roles = [
-  { value: 'tank', label: 'Tank' }, { value: 'healer', label: 'Healer' },
-  { value: 'dps', label: 'DPS' }, { value: 'flex', label: 'Flexible' },
-];
 type Character = {
   id: string; character_name: string; realm: string; class_name: string;
-  race_name: string | null; level: number; raid_role: string; is_main: boolean;
+  race_name: string | null; level: number; raid_role: string; spec_name: string | null; is_main: boolean;
 };
-
-function CharacterForm({ character }: { character?: Character }) {
-  return <form className="character-form" action={saveCharacter}>
-    {character && <input type="hidden" name="character_id" value={character.id} />}
-    <div className="form-grid">
-      <label>Character name <input name="character_name" required minLength={2} maxLength={40} defaultValue={character?.character_name} placeholder="Aetherwind" /></label>
-      <label>Class
-        <select name="class_name" required defaultValue={character?.class_name ?? ''}>
-          <option value="" disabled>Select a class</option>
-          {classes.map(name => <option value={name} key={name}>{name}</option>)}
-        </select>
-      </label>
-      <label>Race
-        <select name="race_name" required defaultValue={character?.race_name ?? ''}>
-          <option value="" disabled>Select a race</option>
-          {races.map(name => <option value={name} key={name}>{name}</option>)}
-        </select>
-      </label>
-      <label>Preferred raid role
-        <select name="raid_role" defaultValue={character?.raid_role ?? 'flex'}>
-          {roles.map(role => <option key={role.value} value={role.value}>{role.label}</option>)}
-        </select>
-      </label>
-    </div>
-    <button type="submit" className="char-primary">{character ? 'Save changes' : '+ Add character'}</button>
-  </form>;
-}
 
 export default async function CharactersPage({ searchParams }: { searchParams: Promise<{ result?: string }> }) {
   const supabase = await createClient();
@@ -51,7 +19,7 @@ export default async function CharactersPage({ searchParams }: { searchParams: P
   const userId = String(claims.claims.sub);
   const [{ data, error }, { data: profile }] = await Promise.all([
     supabase.from('characters')
-      .select('id,character_name,realm,class_name,race_name,level,raid_role,is_main')
+      .select('id,character_name,realm,class_name,race_name,level,raid_role,spec_name,is_main')
       .eq('owner_id', userId).order('is_main', { ascending: false }).order('character_name'),
     supabase.from('profiles').select('display_name,role,guest_status').eq('id', userId).single(),
   ]);
@@ -94,7 +62,7 @@ export default async function CharactersPage({ searchParams }: { searchParams: P
             <div className="char-emblem" data-class={char.class_name}>{char.class_name.slice(0,1)}</div>
             <div className="char-info">
               <div className="char-name">{char.character_name} {char.is_main && <span className="char-main-badge">★ MAIN</span>}</div>
-              <div className="char-meta">Level {char.level} {char.race_name ? char.race_name + ' ' : ''}{char.class_name} · {char.raid_role.toUpperCase()}</div>
+              <div className="char-meta">Level {char.level} {char.race_name ? char.race_name + ' ' : ''}{char.class_name} · {char.spec_name ?? 'Spec not set'} · {char.raid_role.toUpperCase()}</div>
               <div className="char-realm">Horde · PvP ruleset</div>
             </div>
             <div className="char-actions">
@@ -109,7 +77,7 @@ export default async function CharactersPage({ searchParams }: { searchParams: P
         <aside className="char-panel char-create">
           <p className="char-kicker">EXPAND YOUR ROSTER</p>
           <h2>Register a character</h2>
-          <p className="char-help">Register your level 60 Horde character for the guild’s PvP ruleset. Realm and level are handled automatically; game imports can come later.</p>
+          <p className="char-help">Register your class and specialization for your level 60 Horde character for the guild’s PvP ruleset. Realm and level are handled automatically; game imports can come later.</p>
           <CharacterForm />
           <p className="char-helper">All registered characters are stored at level 60. Guild officers can view them, but only you can edit or delete your characters.</p>
         </aside>

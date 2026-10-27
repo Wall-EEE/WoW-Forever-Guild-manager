@@ -30,6 +30,7 @@ function safeFailureMessage(error?: ErrorInfo) {
   if (message.includes('officer') || message.includes('not authorized') || message.includes('permission denied')) return 'unauthorized';
   if (message.includes('title') || message.includes('raid name')) return 'invalid_title';
   if (message.includes('capacity') || message.includes('raid size')) return 'invalid_capacity';
+  if (message.includes('selected role is full')) return 'role_full';
   if (message.includes('full')) return 'raid_full';
   if (message.includes('already signed up')) return 'already_joined';
   if (message.includes('guest approval')) return 'guest_pending';
@@ -51,12 +52,15 @@ export async function createRaid(form: FormData) {
   const date = String(form.get('starts_at') ?? '');
   const count = String(form.get('capacity') ?? '');
   const audience = String(form.get('audience') ?? '');
+  const targets=['tank_slots','healer_slots','dps_slots'].map(key=>String(form.get(key)??''));
+  const targetNumbers=targets.map(Number);
   const problems = [
     ...(title.length < 2 || title.length > 90 ? ['title must be 2–90 characters'] : []),
     ...(description.length > 1000 ? ['notes too long'] : []),
     ...(!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(date) ? ['invalid start date format'] : []),
     ...(!['10', '20', '40'].includes(count) ? ['unsupported raid capacity'] : []),
     ...(!['guild_only', 'guild_and_guests'].includes(audience) ? ['invalid audience'] : []),
+    ...(!targets.every(t=>/^\\d+$/.test(t)) || targetNumbers.reduce((a,b)=>a+b,0)!==Number(count) ? ['role targets must add up to raid capacity'] : []),
   ];
   if (problems.length) {
     const reference = reportFailure('createRaid', 'form_validation', undefined, { problems });
@@ -65,6 +69,7 @@ export async function createRaid(form: FormData) {
   const { error } = await supabase.rpc('create_raid', {
     raid_title: title, raid_description: description, local_start: date,
     raid_capacity: Number(count), raid_audience: audience,
+    needed_tanks:targetNumbers[0],needed_healers:targetNumbers[1],needed_dps:targetNumbers[2],
   });
   if (error) {
     const reference = reportFailure('createRaid', 'supabase_rpc', error, { capacity: count, audience });
@@ -77,12 +82,13 @@ export async function joinRaid(form: FormData) {
   const { supabase } = await authenticated();
   const raid = String(form.get('raid_id') ?? '');
   const character = String(form.get('character_id') ?? '');
-  if (!UUID.test(raid) || !UUID.test(character)) {
+  const signupRole=String(form.get('signup_role')??'');
+  if (!UUID.test(raid) || !UUID.test(character) || !['tank','healer','dps'].includes(signupRole)) {
     const reference = reportFailure('joinRaid', 'invalid_identifiers');
     outcome('invalid_form', reference);
   }
   const { error } = await supabase.rpc('join_raid', {
-    target_raid: raid, target_character: character,
+    target_raid: raid, target_character: character,selected_role:signupRole,
   });
   if (error) {
     const reference = reportFailure('joinRaid', 'supabase_rpc', error, { raidId: raid });
