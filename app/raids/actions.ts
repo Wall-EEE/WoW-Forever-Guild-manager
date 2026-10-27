@@ -23,9 +23,8 @@ export async function createRaid(form: FormData) {
   const date = String(form.get('starts_at') ?? '');
   const count = String(form.get('capacity') ?? '');
   const audience = String(form.get('audience') ?? '');
-  if (title.length < 3 || title.length > 90 || description.length > 1000 ||
-    !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(date) || !/^\d+$/.test(count) ||
-    Number(count) < 1 || Number(count) > 40 ||
+  if (title.length < 2 || title.length > 90 || description.length > 1000 ||
+    !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(date) || !['10', '20', '40'].includes(count) ||
     !['guild_only', 'guild_and_guests'].includes(audience)) outcome('error');
   const { error } = await supabase.rpc('create_raid', {
     raid_title: title, raid_description: description, local_start: date,

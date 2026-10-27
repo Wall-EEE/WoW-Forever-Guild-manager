@@ -95,9 +95,9 @@ export default async function RaidsPage({ searchParams }: { searchParams: Promis
             <p className="raid-gold">OFFICER TOOLS</p><h2>Schedule a raid</h2>
             <p>Times are entered in Europe/Oslo time, including daylight saving adjustments.</p>
             <form action={createRaid} className="raid-form">
-              <label>Raid name <input type="text" name="title" minLength={3} maxLength={90} placeholder="Molten Core" required/></label>
+              <label>Raid name <input type="text" name="title" minLength={2} maxLength={90} placeholder="MC or Molten Core" required/></label>
               <label>Start date and time <input type="datetime-local" name="starts_at" required/></label>
-              <label>Raid size <input type="number" name="capacity" min={1} max={40} defaultValue={40} required/></label>
+              <label>Raid size <select name="capacity" defaultValue="40" required><option value="10">10 players</option><option value="20">20 players</option><option value="40">40 players</option></select></label>
               <label>Who can sign up? <select name="audience" defaultValue="guild_and_guests"><option value="guild_and_guests">Guild + approved guests</option><option value="guild_only">Guild only</option></select></label>
               <label>Notes (optional) <textarea name="description" maxLength={1000} rows={4} placeholder="Meeting point, preparations, loot rules..." /></label>
               <button className="raid-button raid-create" type="submit">+ Schedule raid</button>
