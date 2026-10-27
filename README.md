@@ -50,3 +50,7 @@ Unofficial fan project.
 ## Raid rules
 
 All signed-in users can view the shared calendar. Officers and Guild Masters create or delete raids. One signup per profile per raid; only owned level 60 characters can be used. Guests must have approved status and cannot join guild-only raids. The `join_raid` database function validates these rules, locks the raid row during capacity checks, and then inserts the signup; direct table inserts are not available to the browser. Scheduling uses Europe/Oslo local time, stored as UTC timestamps. The event list currently shows up to 60 future raids and each calendar view shows upcoming events rather than a month grid.
+
+## Raid error diagnostics
+
+Raid server actions log structured entries prefixed with `[raid-action]` to Vercel's runtime logs, including a short correlation reference, action name, validation reason and safe database error fields. The UI displays a category-specific message and the matching eight-character reference. Check Vercel → Project → Logs and search for the reference. No Discord tokens, OAuth secrets, or character names are included in these diagnostics.

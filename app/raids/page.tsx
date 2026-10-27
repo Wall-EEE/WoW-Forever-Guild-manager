@@ -17,7 +17,7 @@ const time = (value: string) => new Intl.DateTimeFormat('en-GB', {
   hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Oslo',
 }).format(new Date(value));
 
-export default async function RaidsPage({ searchParams }: { searchParams: Promise<{ result?: string }> }) {
+export default async function RaidsPage({ searchParams }: { searchParams: Promise<{ result?: string; ref?: string }> }) {
   const supabase = await createClient();
   const { data: auth } = await supabase.auth.getClaims();
   if (!auth?.claims?.sub) redirect('/login');
@@ -34,11 +34,23 @@ export default async function RaidsPage({ searchParams }: { searchParams: Promis
   const profile = profileResult.data;
   const isOfficer = profile?.role === 'officer' || profile?.role === 'guild_master';
   const eligible = !!profile && (profile.role !== 'guest' || profile.guest_status === 'approved');
-  const { result } = await searchParams;
+  const { result, ref } = await searchParams;
   const messages: Record<string, string> = {
     created: 'The raid is on the calendar.', joined: 'You are signed up for the raid.',
     left: 'You have left the raid.', deleted: 'Raid removed.',
-    error: 'Action failed. Check the details and try again.',
+    error: 'The action failed unexpectedly. Check the error reference in the Vercel runtime logs.',
+    invalid_form: 'Some fields are invalid. Raid names must be 2–90 characters, the date must be valid, and raid sizes must be 10, 20, or 40.',
+    invalid_date: 'Choose a valid future raid start date and time (Oslo time).',
+    unauthorized: 'Only guild officers or the Guild Master can manage raids.',
+    invalid_title: 'Raid names must be between 2 and 90 characters.',
+    invalid_capacity: 'Select a raid size of 10, 20, or 40 players.',
+    raid_full: 'This raid has no available slots.',
+    already_joined: 'You have already signed up for this raid.',
+    guest_pending: 'Your guest account must be approved before signing up.',
+    guild_only: 'This raid is reserved for guild members.',
+    invalid_character: 'Select one of your own registered level 60 characters.',
+    leave_error: 'Unable to withdraw from this raid.',
+    delete_error: 'Unable to delete this raid.',
     join_error: 'Unable to sign up: the raid may be full, already started, guild-only, or you may already be signed up. Approved status and an owned level 60 character are required.',
   };
 
@@ -55,7 +67,7 @@ export default async function RaidsPage({ searchParams }: { searchParams: Promis
           <p>Plan your guild nights. Join with your level 60 main or alt. Fill the roster with approved guests.</p></div>
         <div className="raid-insignia">⚔</div>
       </div>
-      {result && messages[result] && <p role="status" className={'raid-alert ' + (result.includes('error') ? 'raid-alert-error' : '')}>{messages[result]}</p>}
+      {result && messages[result] && <p role="status" className={'raid-alert ' + (['created', 'joined', 'left', 'deleted'].includes(result) ? '' : 'raid-alert-error')}>{messages[result]}{ref && /^[0-9a-f]{8}$/i.test(ref) && <> <span className="raid-error-ref">Error reference: <code>{ref}</code></span></>}</p>}
       {!eligible && <div className="raid-warning"><b>Approval required</b><p>You can browse raids and manage your characters now. Your guest request must be approved before you can sign up.</p></div>}
       <div className="raid-layout">
         <section className="raid-events">
