@@ -52,15 +52,23 @@ export async function createRaid(form: FormData) {
   const date = String(form.get('starts_at') ?? '');
   const count = String(form.get('capacity') ?? '');
   const audience = String(form.get('audience') ?? '');
-  const targets=['tank_slots','healer_slots','dps_slots'].map(key=>String(form.get(key)??''));
-  const targetNumbers=targets.map(Number);
+  // DPS is derived server-side, never trusted from a submitted form field.
+  const tankText = String(form.get('tank_slots') ?? '');
+  const healerText = String(form.get('healer_slots') ?? '');
+  const size = Number(count);
+  const roleCountsValid = /^(0|[1-9][0-9]*)$/.test(tankText) &&
+    /^(0|[1-9][0-9]*)$/.test(healerText);
+  const tanks = Number(tankText);
+  const healers = Number(healerText);
+  const dps = size - tanks - healers;
   const problems = [
     ...(title.length < 2 || title.length > 90 ? ['title must be 2–90 characters'] : []),
     ...(description.length > 1000 ? ['notes too long'] : []),
-    ...(!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(date) ? ['invalid start date format'] : []),
+    ...(!/^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}$/.test(date) ? ['invalid start date format'] : []),
     ...(!['10', '20', '40'].includes(count) ? ['unsupported raid capacity'] : []),
     ...(!['guild_only', 'guild_and_guests'].includes(audience) ? ['invalid audience'] : []),
-    ...(!targets.every(t=>/^\\d+$/.test(t)) || targetNumbers.reduce((a,b)=>a+b,0)!==Number(count) ? ['role targets must add up to raid capacity'] : []),
+    ...(!roleCountsValid || tanks > size || healers > size || dps < 0
+      ? ['invalid tank/healer targets'] : []),
   ];
   if (problems.length) {
     const reference = reportFailure('createRaid', 'form_validation', undefined, { problems });
@@ -69,7 +77,7 @@ export async function createRaid(form: FormData) {
   const { error } = await supabase.rpc('create_raid', {
     raid_title: title, raid_description: description, local_start: date,
     raid_capacity: Number(count), raid_audience: audience,
-    needed_tanks:targetNumbers[0],needed_healers:targetNumbers[1],needed_dps:targetNumbers[2],
+    needed_tanks:tanks,needed_healers:healers,needed_dps:dps,
   });
   if (error) {
     const reference = reportFailure('createRaid', 'supabase_rpc', error, { capacity: count, audience });
