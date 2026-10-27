@@ -18,17 +18,18 @@ export default function Home() {
   return (
     <main className="app-shell">
       <aside className="sidebar">
-        <a className="brand" href="#"><span className="brand-mark">W</span><span>WOW <b>FOREVER</b></span></a>
-        <p className="nav-label">COMMAND</p>
+        <a className="brand" href="/"><span className="brand-mark">W</span><span>WOW <b>FOREVER</b></span></a>
+        <details className="sidebar-menu"><summary aria-label="Toggle dashboard navigation"><span className="dashboard-burger" aria-hidden="true"><i/><i/><i/></span><span>Menu</span></summary><p className="nav-label">COMMAND</p>
         <nav>
-          <a className="nav-item active" href="#">◈ Overview</a>
+          <a className="nav-item active" href="/">◈ Overview</a>
           <a className="nav-item" href="/raids">▦ Raid calendar</a>
           <a className="nav-item" href="/characters">⚔ My characters</a>
           <a className="nav-item" href="/guild">♜ Guild roster</a>
+          <a className="nav-item" href="/account">♙ Account</a>
           <a className="nav-item" href="#">♙ Applications</a>
           <a className="nav-item" href="/admin/guests">♧ Guest players</a>
           <a className="nav-item" href="#">▤ Strategies</a>
-        </nav>
+        </nav></details>
         <div className="sidebar-bottom"><span className="online-dot" />Development build<p>CLASSIC+ · LEVEL 60</p></div>
       </aside>
 

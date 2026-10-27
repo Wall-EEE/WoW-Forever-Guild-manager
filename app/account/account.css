@@ -1,0 +1,34 @@
+.account-shell{min-height:100vh;background:radial-gradient(ellipse at 75% 0,#2b2114 0,transparent 42%),#0b0e14;color:#eae7df}
+.account-content{max-width:1320px;margin:auto;padding:40px 26px 80px}
+.account-kicker{font-size:10px;color:#d5a865;font-weight:800;letter-spacing:1.8px;margin:0}
+.account-heading{display:flex;justify-content:space-between;align-items:center;margin:30px 0;gap:20px}
+.account-heading h1{font-size:38px;margin:10px 0}.account-heading p:last-child{color:#a5a9b3;line-height:1.6}
+.account-insignia{font-size:66px;color:#ba9052}
+.account-hero{border:1px solid #665039;background:linear-gradient(115deg,#2a231a,#171c25 75%);border-radius:12px;padding:28px;display:flex;align-items:center;gap:22px}
+.account-avatar{width:76px;height:76px;border:1px solid #86663f;background:#3b2c1c;color:#f2ca88;border-radius:12px;display:grid;place-items:center;font-size:35px;font-weight:800;flex-shrink:0}
+.account-identity{min-width:0;flex:1}.account-identity h2{font-size:26px;overflow-wrap:anywhere;margin:8px 0 12px}
+.account-tags{display:flex;flex-wrap:wrap;gap:9px}.account-tags span{border:1px solid #645238;background:#33291c;color:#e9c28c;padding:6px 10px;border-radius:5px;font-size:11px}
+.account-tags .account-status-approved{border-color:#41684c;background:#203a2a;color:#a9dfb4}
+.account-tags .account-status-pending{border-color:#7b6536;color:#f1d28e}.account-tags .account-status-rejected{border-color:#804a48;background:#3b2426;color:#f0b0ad}
+.account-since{display:grid;gap:7px;text-align:right}.account-since small{color:#a0a5b0;font-size:10px;letter-spacing:1px}.account-since strong{white-space:nowrap;color:#e5c28d}
+.account-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px;margin:22px 0}
+.account-stats>div{border:1px solid #34343d;background:#171b24;border-radius:9px;padding:20px}
+.account-stats span,.account-stats strong{display:block}.account-stats span{font-size:10px;color:#9ea4b0;letter-spacing:1px}.account-stats strong{font-size:29px;margin-top:12px}
+.account-stats .account-stat-name{font-size:19px;color:#e6bf81;overflow-wrap:anywhere}
+.account-grid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:20px;align-items:start}
+.account-panel{border:1px solid #383941;background:#171b24;border-radius:10px;padding:24px;min-width:0}
+.account-panel h2{font-size:21px;margin:10px 0 19px}
+.account-quicklinks{display:grid;gap:10px}
+.account-quicklinks a{display:flex;align-items:center;gap:14px;background:#1e232e;border:1px solid #45414a;border-radius:8px;padding:14px;min-height:70px}
+.account-quicklinks a:hover,.account-quicklinks a:focus-visible{border-color:#b58b51;background:#2b2828}
+.account-quicklinks a>span:nth-child(2){flex:1;min-width:0}.account-quicklinks strong,.account-quicklinks small{display:block}
+.account-quicklinks small{color:#a8acb8;font-size:11px;margin-top:6px;line-height:1.4}
+.account-link-icon{font-size:22px;color:#e5b773;width:32px;text-align:center}
+.account-quicklinks a>span:last-child{color:#e5bc79;font-size:23px}
+.account-details{margin:0}.account-details>div{display:flex;justify-content:space-between;gap:15px;padding:15px 0;border-bottom:1px solid #34343d}
+.account-details dt{color:#a6aab5}.account-details dd{margin:0;color:#e8e5dd;font-weight:700;text-align:right;overflow-wrap:anywhere}
+.account-security{margin-top:24px;padding-top:5px}.account-security h3{font-size:15px}.account-security p{color:#a9aeb9;line-height:1.6;font-size:12px}
+.account-security button{margin-top:12px;background:#292a33;border:1px solid #695047;color:#efb9ad;border-radius:7px;padding:12px 16px;cursor:pointer;min-height:44px}
+.account-notice{margin:0 0 20px;background:#30291e;border:1px solid #77603a;border-radius:8px;padding:18px;color:#f0cb8d}.account-notice p{color:#d2c2a7;line-height:1.5;margin-bottom:0}
+@media(max-width:850px){.account-grid{grid-template-columns:1fr}}
+@media(max-width:600px){.account-content{padding:27px 15px 65px}.account-heading h1{font-size:31px}.account-insignia{display:none}.account-hero{padding:17px;gap:13px;flex-wrap:wrap}.account-avatar{width:55px;height:55px;font-size:27px}.account-identity h2{font-size:20px}.account-since{width:100%;text-align:left;padding-top:9px;border-top:1px solid #5b4933}.account-stats{gap:8px}.account-stats>div{padding:13px}.account-stats strong{font-size:23px}.account-stats .account-stat-name{font-size:14px}.account-panel{padding:17px}}

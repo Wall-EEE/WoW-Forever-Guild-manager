@@ -1,3 +1,4 @@
+import DashboardNav from '@/app/components/dashboard-nav';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
@@ -33,11 +34,7 @@ export default async function CharactersPage({ searchParams }: { searchParams: P
   const main = characters.find(char => char.is_main);
 
   return <main className="char-shell">
-    <header className="char-top">
-      <Link className="char-brand" href="/">⚔ <span>WOW <b>FOREVER</b></span></Link>
-      <nav><Link href="/">Overview</Link><Link href="/raids">Raid Calendar</Link><Link className="char-current" href="/characters">My Characters</Link><Link href="/guild">Guild Roster</Link><Link href="/account">Account</Link></nav>
-      <span className="char-user">{profile?.display_name ?? 'Adventurer'} · {profile?.role === 'guest' ? 'Guest' : 'Guild'}</span>
-    </header>
+    <DashboardNav active="/characters" displayName={profile?.display_name??'Adventurer'}/>
     <div className="char-inner">
       <div className="char-breadcrumb">GUILD COMMAND CENTER / ROSTER</div>
       <div className="char-heading"><div><p className="char-kicker">THE HALL OF HEROES</p><h1>My Characters</h1>

@@ -1,3 +1,4 @@
+import DashboardNav from '@/app/components/dashboard-nav';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
@@ -27,11 +28,7 @@ export default async function GuildRosterPage(){
   const characterCount=rows.filter(r=>r.character_id).length;
   const classCount=new Set(rows.filter(r=>r.class_name).map(r=>r.class_name)).size;
   return <main className="roster-shell">
-    <header className="roster-nav">
-      <Link className="roster-brand" href="/">⚔ WOW <b>FOREVER</b></Link>
-      <nav aria-label="Main navigation"><Link href="/">Overview</Link><Link href="/raids">Raid Calendar</Link><Link href="/characters">My Characters</Link><Link href="/guild" aria-current="page">Guild Roster</Link><Link href="/account">Account</Link></nav>
-      <span className="roster-user">{profile?.display_name??'Adventurer'}</span>
-    </header>
+    <DashboardNav active="/guild" displayName={profile?.display_name??'Adventurer'}/>
     <div className="roster-content">
       <p className="roster-kicker">GUILD COMMAND CENTER / HALL OF HEROES</p>
       <div className="roster-heading"><div><p className="roster-kicker">THE BROTHERHOOD</p><h1>Guild Roster</h1><p>Meet the guild, find your raid teammates, and discover every main and alt.</p></div><span className="roster-banner">HORDE · PVP</span></div>

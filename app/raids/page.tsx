@@ -1,3 +1,4 @@
+import DashboardNav from '@/app/components/dashboard-nav';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
@@ -80,11 +81,7 @@ export default async function RaidsPage({ searchParams }: { searchParams: Promis
   };
 
   return <main className="raid-shell">
-    <header className="raid-nav">
-      <Link href="/" className="raid-logo">⚔ <span>WOW <b>FOREVER</b></span></Link>
-      <nav><Link href="/">Overview</Link><Link className="selected" href="/raids">Raid Calendar</Link><Link href="/characters">My Characters</Link><Link href="/guild">Guild Roster</Link><Link href="/account">Account</Link></nav>
-      <span className="raid-profile">{profile?.display_name ?? 'Adventurer'}</span>
-    </header>
+    <DashboardNav active="/raids" displayName={profile?.display_name??'Adventurer'}/>
     <div className="raid-container">
       <p className="raid-overline">GUILD COMMAND CENTER / ADVENTURES</p>
       <div className="raid-heading">
