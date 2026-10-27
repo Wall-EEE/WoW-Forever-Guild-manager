@@ -29,7 +29,8 @@ npm run build
 - `/login`: Discord sign-in
 - `/account`: user profile and officer guest-review entry
 - `/admin/guests`: pending guest approvals
-- `/characters`: **live character management** with create, edit, delete and main selection
+- `/characters`: live character management with create, edit, delete and main selection
+- `/raids`: shared raid calendar, officer event creation, character-based signups and withdrawal
 
 ## Character management
 
@@ -41,7 +42,11 @@ Horde-only registration, available races, and classic class choices are current 
 
 - [x] Discord login, profiles and guest approval
 - [x] Character manager with ownership-safe CRUD
-- [ ] Raid events and guest signups
+- [x] Raid events and guest signups
 - [ ] Guild roster, interviews, strategy guides, logs and game imports
 
 Unofficial fan project.
+
+## Raid rules
+
+All signed-in users can view the shared calendar. Officers and Guild Masters create or delete raids. One signup per profile per raid; only owned level 60 characters can be used. Guests must have approved status and cannot join guild-only raids. The `join_raid` database function validates these rules, locks the raid row during capacity checks, and then inserts the signup; direct table inserts are not available to the browser. Scheduling uses Europe/Oslo local time, stored as UTC timestamps. The event list currently shows up to 60 future raids and each calendar view shows upcoming events rather than a month grid.

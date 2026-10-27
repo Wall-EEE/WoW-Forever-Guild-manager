@@ -22,7 +22,7 @@ export default function Home() {
         <p className="nav-label">COMMAND</p>
         <nav>
           <a className="nav-item active" href="#">◈ Overview</a>
-          <a className="nav-item" href="#">▦ Raid calendar</a>
+          <a className="nav-item" href="/raids">▦ Raid calendar</a>
           <a className="nav-item" href="/characters">⚔ Roster & characters</a>
           <a className="nav-item" href="#">♙ Applications</a>
           <a className="nav-item" href="/admin/guests">♧ Guest players</a>

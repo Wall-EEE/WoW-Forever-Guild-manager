@@ -67,7 +67,7 @@ export default async function CharactersPage({ searchParams }: { searchParams: P
   return <main className="char-shell">
     <header className="char-top">
       <Link className="char-brand" href="/">⚔ <span>WOW <b>FOREVER</b></span></Link>
-      <nav><Link href="/">Overview</Link><Link className="char-current" href="/characters">My Characters</Link><Link href="/account">Account</Link></nav>
+      <nav><Link href="/">Overview</Link><Link href="/raids">Raid Calendar</Link><Link className="char-current" href="/characters">My Characters</Link><Link href="/account">Account</Link></nav>
       <span className="char-user">{profile?.display_name ?? 'Adventurer'} · {profile?.role === 'guest' ? 'Guest' : 'Guild'}</span>
     </header>
     <div className="char-inner">
