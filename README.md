@@ -54,3 +54,7 @@ All signed-in users can view the shared calendar. Officers and Guild Masters cre
 ## Raid error diagnostics
 
 Raid server actions log structured entries prefixed with `[raid-action]` to Vercel's runtime logs, including a short correlation reference, action name, validation reason and safe database error fields. The UI displays a category-specific message and the matching eight-character reference. Check Vercel → Project → Logs and search for the reference. No Discord tokens, OAuth secrets, or character names are included in these diagnostics.
+
+## Raid roles and specialization
+
+The character form offers class-specific specs (tentative Classic-style names until official game details are published). Existing characters have no spec until updated. Raid creation supports editable tank/healer/DPS quotas that total 10, 20 or 40 slots. Default templates are 1/2/7, 2/3/15 and 4/8/28. Signups include a role validated by the database; the roster displays role groups, character classes, specialization and player display names. Deleting a raid requires explicit modal confirmation. The new schema change is in `supabase/migrations/202610270006_role_roster_and_specs.sql`.
