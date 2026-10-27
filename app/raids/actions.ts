@@ -30,6 +30,7 @@ function safeFailureMessage(error?: ErrorInfo) {
   if (message.includes('officer') || message.includes('not authorized') || message.includes('permission denied')) return 'unauthorized';
   if (message.includes('title') || message.includes('raid name')) return 'invalid_title';
   if (message.includes('capacity') || message.includes('raid size')) return 'invalid_capacity';
+  if (message.includes('lockout')) return 'lockout_error';
   if (message.includes('selected role is full')) return 'role_full';
   if (message.includes('full')) return 'raid_full';
   if (message.includes('already signed up')) return 'already_joined';
@@ -52,6 +53,7 @@ export async function createRaid(form: FormData) {
   const date = String(form.get('starts_at') ?? '');
   const count = String(form.get('capacity') ?? '');
   const audience = String(form.get('audience') ?? '');
+  const lockout = String(form.get('lockout_key') ?? '').trim();
   // DPS is derived server-side, never trusted from a submitted form field.
   const tankText = String(form.get('tank_slots') ?? '');
   const healerText = String(form.get('healer_slots') ?? '');
@@ -78,6 +80,7 @@ export async function createRaid(form: FormData) {
     raid_title: title, raid_description: description, local_start: date,
     raid_capacity: Number(count), raid_audience: audience,
     needed_tanks:tanks,needed_healers:healers,needed_dps:dps,
+    raid_lockout_key:lockout,
   });
   if (error) {
     const reference = reportFailure('createRaid', 'supabase_rpc', error, { capacity: count, audience });
@@ -86,39 +89,55 @@ export async function createRaid(form: FormData) {
   outcome('created');
 }
 
-export async function joinRaid(form: FormData) {
+export async function offerAvailability(form: FormData) {
   const { supabase } = await authenticated();
   const raid = String(form.get('raid_id') ?? '');
-  const character = String(form.get('character_id') ?? '');
-  const signupRole=String(form.get('signup_role')??'');
-  if (!UUID.test(raid) || !UUID.test(character) || !['tank','healer','dps'].includes(signupRole)) {
-    const reference = reportFailure('joinRaid', 'invalid_identifiers');
-    outcome('invalid_form', reference);
+  const chosen = form.getAll('character_id').filter((id): id is string => typeof id === 'string');
+  if (!UUID.test(raid) || chosen.length > 30 || chosen.some(id => !UUID.test(id))) {
+    const reference=reportFailure('offerAvailability','invalid_selection');
+    outcome('invalid_offer',reference);
   }
-  const { error } = await supabase.rpc('join_raid', {
-    target_raid: raid, target_character: character,selected_role:signupRole,
+  const { error } = await supabase.rpc('set_raid_availability',{
+    target_raid:raid,offered_characters:chosen,
   });
   if (error) {
-    const reference = reportFailure('joinRaid', 'supabase_rpc', error, { raidId: raid });
-    outcome(safeFailureMessage(error) === 'error' ? 'join_error' : safeFailureMessage(error), reference);
+    const reference=reportFailure('offerAvailability','database',error,{raidId:raid});
+    outcome('offer_error',reference);
   }
-  outcome('joined');
+  outcome(chosen.length?'offered':'withdrawn');
 }
 
-export async function leaveRaid(form: FormData) {
-  const { supabase, uid } = await authenticated();
-  const raid = String(form.get('raid_id') ?? '');
-  if (!UUID.test(raid)) {
-    const reference = reportFailure('leaveRaid', 'invalid_raid_id');
-    outcome('invalid_form', reference);
+export async function assignRaidPlayer(form: FormData) {
+  const { supabase }=await authenticated();
+  const raid=String(form.get('raid_id')??'');
+  const player=String(form.get('profile_id')??'');
+  const character=String(form.get('character_id')??'');
+  const role=String(form.get('signup_role')??'');
+  if (![raid,player,character].every(id=>UUID.test(id)) || !['tank','healer','dps'].includes(role)) {
+    const reference=reportFailure('assignRaidPlayer','invalid_selection');
+    outcome('invalid_offer',reference);
   }
-  const { data, error } = await supabase.from('raid_signups').delete()
-    .eq('raid_id', raid).eq('profile_id', uid).select('id').maybeSingle();
-  if (error || !data) {
-    const reference = reportFailure('leaveRaid', error ? 'database_error' : 'signup_not_found', error ?? undefined, { raidId: raid });
-    outcome('leave_error', reference);
+  const {error}=await supabase.rpc('assign_raid_character',{
+    target_raid:raid,target_profile:player,target_character:character,selected_role:role,
+  });
+  if(error){
+    const reference=reportFailure('assignRaidPlayer','database',error,{raidId:raid});
+    outcome('assignment_error',reference);
   }
-  outcome('left');
+  outcome('assigned');
+}
+
+export async function unassignRaidPlayer(form: FormData) {
+  const {supabase}=await authenticated();
+  const raid=String(form.get('raid_id')??'');
+  const player=String(form.get('profile_id')??'');
+  if(!UUID.test(raid)||!UUID.test(player)) outcome('invalid_offer');
+  const {error}=await supabase.rpc('unassign_raid_player',{target_raid:raid,target_profile:player});
+  if(error){
+    const reference=reportFailure('unassignRaidPlayer','database',error,{raidId:raid});
+    outcome('assignment_error',reference);
+  }
+  outcome('unassigned');
 }
 
 export async function deleteRaid(form: FormData) {
