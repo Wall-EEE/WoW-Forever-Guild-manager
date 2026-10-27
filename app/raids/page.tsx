@@ -6,6 +6,7 @@ import './raids.css';
 import DeleteRaidConfirm from './delete-confirm';
 import RoleTargets from './role-targets';
 import RaidAvailabilityForm from './signup-form';
+import { raidLockoutWeek } from '@/lib/raid-week';
 
 export const dynamic = 'force-dynamic';
 
@@ -99,6 +100,7 @@ export default async function RaidsPage({ searchParams }: { searchParams: Promis
           {raidsResult.error ? <p className="raid-empty">Unable to load raids. Please verify the raid database migration.</p> :
           raids.length === 0 ? <div className="raid-empty"><span>♜</span><h3>No raids scheduled yet</h3><p>When an officer schedules the next adventure, it will appear here for the whole community.</p></div> :
           <div className="raid-items">{raids.map(raid => {
+            const raidWeek = raidLockoutWeek(raid.starts_at);
             const roster = signups.filter(signup => signup.raid_id === raid.id);
             const mine = roster.find(signup => signup.profile_id === uid);
             const entries=publicRoster.filter(member=>member.raid_id===raid.id);
@@ -114,7 +116,9 @@ export default async function RaidsPage({ searchParams }: { searchParams: Promis
               <div className="raid-event-head">
                 <div className="raid-date-mark">⚔</div>
                 <div><p className="raid-gold">{raid.audience === 'guild_only' ? 'GUILD ONLY' : 'GUILD + APPROVED GUESTS'}</p>
-                  <h3>{raid.title}</h3><span className="raid-time">{time(raid.starts_at)} · Oslo time</span><small className="raid-lockout-label">Lockout group: {raid.lockout_key} · Wed–Wed</small></div>
+                  <h3>{raid.title}</h3><span className="raid-time">{time(raid.starts_at)} · Oslo time</span>
+                  <div className="raid-week-banner"><strong>{raidWeek.title}</strong><span>{raidWeek.dateRange}</span></div>
+                  <small className="raid-lockout-label">Instance lockout: {raid.lockout_key} · resets Wednesday 00:00 (Oslo)</small></div>
                 <span className="raid-capacity">{roster.length} / {raid.capacity}</span>
               </div>
               {raid.description && <p className="raid-description">{raid.description}</p>}
@@ -176,7 +180,7 @@ export default async function RaidsPage({ searchParams }: { searchParams: Promis
               <div className="raid-event-bottom"><span>{open} confirmed spots left · {roster.length}/{raid.capacity} confirmed</span>
                 {canOffer && characters.length>0 ? <div className="raid-offer-container">
                   {mine && <span className="raid-joined">✓ Confirmed with {characters.find(c=>c.id===mine.character_id)?.character_name??'a character'}</span>}
-                  <RaidAvailabilityForm raidId={raid.id} characters={characters} offered={offeredIds} confirmed={mine?.character_id}/>
+                  <RaidAvailabilityForm raidId={raid.id} characters={characters} offered={offeredIds} confirmed={mine?.character_id} weekTitle={raidWeek.title} weekRange={raidWeek.dateRange}/>
                 </div> : <span className="raid-unavailable">{!eligible?'Awaiting approval':!characters.length?'Register your characters first':'Guild members only'}</span>}
               </div>
               {isLeader && <div className="raid-admin"><DeleteRaidConfirm id={raid.id} title={raid.title} signups={roster.length}/></div>}

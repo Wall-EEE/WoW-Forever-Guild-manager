@@ -66,3 +66,13 @@ The roster is now two-stage: players offer one or several level-60 characters to
 Confirmed assignments count against raid capacity and role quotas. A character cannot be confirmed twice for the **same raid lockout group** during a Wednesday 00:00–Wednesday 00:00 Europe/Oslo window; the system also blocks overlapping confirmed raids. The raid creation form accepts an optional lockout group identifier (defaults to the event name). Use the **same** identifier for repeated runs of the same instance, even if their event titles differ. This is a prospective roster reservation, not a verified in-game lockout. Reset time and actual rules should be revisited when the game launches.
 
 The new schema is in `supabase/migrations/202610270007_raid_availability_confirmation.sql`. Former direct signup RPC is removed.
+
+## Wednesday–Wednesday signup week labels
+
+Each raid and its character availability form show an ISO-numbered week (with
+the corresponding ISO week-year) and exact Wednesday–Wednesday date range.
+The event's timestamp is converted to the `Europe/Oslo` calendar date before
+calculating its Wednesday 00:00 boundary. This matches the database's existing
+Wednesday raid lockout grouping, including daylight-saving and New Year
+boundaries. Week numbers are labels, not a replacement for the per-instance
+`lockout_key` used to enforce confirmation limits.
