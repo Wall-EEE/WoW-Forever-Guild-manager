@@ -40,12 +40,13 @@ export default async function AccountPage(){
            <Link href="/characters"><span className="account-link-icon">⚔</span><span><strong>My Characters</strong><small>Manage mains, alts and specializations</small></span><span aria-hidden="true">›</span></Link>
            <Link href="/raids"><span className="account-link-icon">▦</span><span><strong>Raid Calendar</strong><small>Offer availability and view confirmations</small></span><span aria-hidden="true">›</span></Link>
            <Link href="/guild"><span className="account-link-icon">♜</span><span><strong>Guild Roster</strong><small>Meet your guild and explore characters</small></span><span aria-hidden="true">›</span></Link>
+           {profile.role==='guild_master'&&<Link href="/admin/members"><span className="account-link-icon">♛</span><span><strong>Manage guild ranks</strong><small>Promote guests and manage officers</small></span><span aria-hidden="true">›</span></Link>}
            {officer&&<Link href="/admin/guests"><span className="account-link-icon">♧</span><span><strong>Guest approvals</strong><small>{pending??0} guest requests awaiting review</small></span><span aria-hidden="true">›</span></Link>}
          </div></section>
          <section className="account-panel"><p className="account-kicker">PROFILE DETAILS</p><h2>Account overview</h2><dl className="account-details">
            <div><dt>Discord display name</dt><dd>{profile.display_name}</dd></div>
            <div><dt>Guild role</dt><dd>{roleNames[profile.role]??profile.role}</dd></div>
-           <div><dt>Access status</dt><dd>{profile.role==='guest'?(statusNames[profile.guest_status]??profile.guest_status):'Guild member'}</dd></div>
+           <div><dt>Access status</dt><dd>{profile.role==='guest'?(statusNames[profile.guest_status]??profile.guest_status) :'Full guild access'}</dd></div>
            <div><dt>Registered characters</dt><dd>{myCharacters.length}</dd></div>
          </dl><div className="account-security"><h3>Session</h3><p>Signed in through Discord. Sign out when using a shared device.</p><form action="/auth/signout" method="post"><button type="submit">Sign out of account</button></form></div></section>
        </div>
