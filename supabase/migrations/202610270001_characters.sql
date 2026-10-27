@@ -7,12 +7,12 @@ alter table public.characters drop constraint if exists characters_raid_role_val
 alter table public.characters add constraint characters_raid_role_valid check (raid_role in ('tank', 'healer', 'dps', 'flex'));
 
 -- Security invoker: ownership remains enforced by existing character RLS.
--- Lock per-owner row to serialize main swaps.
+-- Advisory lock serializes main swaps without requiring profile UPDATE privilege.
 create or replace function public.set_my_main_character(target_character uuid)
 returns void language plpgsql security invoker set search_path = '' as $$
 begin
   if (select auth.uid()) is null then raise exception 'Authentication required'; end if;
-  perform 1 from public.profiles where id = (select auth.uid()) for update;
+  perform pg_catalog.pg_advisory_xact_lock(pg_catalog.hashtextextended((select auth.uid())::text, 0));
   if not exists (select 1 from public.characters where id = target_character and owner_id = (select auth.uid())) then
     raise exception 'Character not found';
   end if;
