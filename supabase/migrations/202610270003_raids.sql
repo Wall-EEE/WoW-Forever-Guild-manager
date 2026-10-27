@@ -67,3 +67,11 @@ begin
 end; $$;
 revoke all on function public.create_raid(text,text,text,integer,text) from public;
 grant execute on function public.create_raid(text,text,text,integer,text) to authenticated;
+-- Tighten older auth helper grants as well as raid RPC grants.
+-- The original auth trigger does not need to be callable as a REST RPC.
+revoke all on function public.on_auth_user_created() from public;
+revoke execute on function public.on_auth_user_created() from anon, authenticated;
+revoke execute on function public.is_officer() from anon;
+revoke execute on function public.decide_guest(uuid,public.guest_review_status) from anon;
+revoke execute on function public.join_raid(uuid,uuid) from anon;
+revoke execute on function public.create_raid(text,text,text,integer,text) from anon;
