@@ -104,3 +104,15 @@ footer span { color: var(--gold); padding: 0 5px; }
  .sidebar-menu nav .nav-item{min-height:45px;padding:13px}
  .sidebar-bottom{display:none}
 }
+
+.sidebar-mobile-menu{display:none}
+@media(max-width:700px){
+ .sidebar>.nav-label,.sidebar>nav{display:none}
+ .sidebar-mobile-menu{display:block;position:relative;margin-left:auto}
+ .sidebar-mobile-menu summary{display:flex;align-items:center;gap:9px;list-style:none;min-height:48px;padding:10px 12px;border:1px solid #665136;border-radius:8px;background:#292319;color:#e9c181;cursor:pointer}
+ .sidebar-mobile-menu summary::-webkit-details-marker{display:none}
+ .sidebar-mobile-menu summary:focus-visible{outline:2px solid #e9c181;outline-offset:3px}
+ .sidebar-mobile-menu nav{display:none;position:absolute;right:0;top:calc(100% + 9px);width:min(290px,calc(100vw - 30px));padding:9px;background:#181d27;border:1px solid #6a553a;border-radius:10px;box-shadow:0 20px 40px #000a;z-index:20}
+ .sidebar-mobile-menu[open] nav{display:grid;grid-template-columns:1fr;gap:3px}
+ .sidebar-mobile-menu nav .nav-item{min-height:45px;padding:13px}
+}
