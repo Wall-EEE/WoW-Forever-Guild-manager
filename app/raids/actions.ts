@@ -64,7 +64,7 @@ export async function createRaid(form: FormData) {
   const problems = [
     ...(title.length < 2 || title.length > 90 ? ['title must be 2–90 characters'] : []),
     ...(description.length > 1000 ? ['notes too long'] : []),
-    ...(!/^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}$/.test(date) ? ['invalid start date format'] : []),
+    ...(!/^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}$/.test(date) ? ['invalid start date format'] : []),
     ...(!['10', '20', '40'].includes(count) ? ['unsupported raid capacity'] : []),
     ...(!['guild_only', 'guild_and_guests'].includes(audience) ? ['invalid audience'] : []),
     ...(!roleCountsValid || tanks > size || healers > size || dps < 0
