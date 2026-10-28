@@ -21,6 +21,6 @@ export default function LoginPage() {
     <p>Sign in through Discord to create your profile. New accounts start as guests awaiting approval.</p>
     <button className="primary-button" onClick={login} disabled={busy}>{busy ? 'Connecting…' : 'Continue with Discord'}</button>
     {error && <p role="alert" className="auth-error">{error}</p>}
-    <a className="back-link" href="/">← Back to dashboard</a>
+    <a className="back-link" href="/">← Sign in to view dashboard</a>
   </section></main>;
 }
